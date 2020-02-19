@@ -140,6 +140,10 @@ static void AlignFishingAnimationFrames(void);
 
 static u8 sub_808D38C(struct EventObject *object, s16 *a1);
 
+static bool8 CanStartSurfing(s16 x, s16 y, u8 direction);
+static void CreateStartSurfingTask(u8 direction);
+static void Task_StartSurfingInit(u8 taskId);
+static void Task_WaitStartSurfing(u8 taskId);
 // .rodata
 
 static bool8 (*const sForcedMovementTestFuncs[])(u8) =
@@ -444,7 +448,7 @@ static u8 DoForcedMovement(u8 direction, void (*b)(u8))
     if (collision)
     {
         ForcedMovement_None();
-        if (collision < COLLISION_STOP_SURFING)
+        if (collision < COLLISION_START_SURFING)
         {
             return 0;
         }
@@ -627,7 +631,7 @@ static void PlayerNotOnBikeMoving(u8 direction, u16 heldKeys)
         }
         else
         {
-            u8 adjustedCollision = collision - COLLISION_STOP_SURFING;
+            u8 adjustedCollision = collision - COLLISION_START_SURFING;
             if (adjustedCollision > 3)
                 PlayerNotOnBikeCollide(direction);
             return;
@@ -681,7 +685,8 @@ u8 CheckForEventObjectCollision(struct EventObject *eventObject, s16 x, s16 y, u
     u8 collision = GetCollisionAtCoords(eventObject, x, y, direction);
     if (collision == COLLISION_ELEVATION_MISMATCH && CanStopSurfing(x, y, direction))
         return COLLISION_STOP_SURFING;
-
+    if (collision == COLLISION_ELEVATION_MISMATCH && CanStartSurfing(x, y, direction))
+        return COLLISION_START_SURFING;
     if (ShouldJumpLedge(x, y, direction))
     {
         IncrementGameStat(GAME_STAT_JUMPED_DOWN_LEDGES);
@@ -725,6 +730,19 @@ static bool8 CanStopSurfing(s16 x, s16 y, u8 direction)
     {
         return FALSE;
     }
+}
+
+static bool8 CanStartSurfing(s16 x, s16 y, u8 direction)
+{
+	if ((gPlayerAvatar.flags & PLAYER_AVATAR_FLAG_ON_FOOT)) // && !PartyHasMonWithSurf()) //TODO remove the !
+	{
+		CreateStartSurfingTask(direction);
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
 }
 
 static bool8 ShouldJumpLedge(s16 x, s16 y, u8 z)
@@ -1640,6 +1658,22 @@ static void CreateStopSurfingTask(u8 direction)
     Task_StopSurfingInit(taskId);
 }
 
+static void CreateStartSurfingTask(u8 direction)
+{
+	u8 taskId;
+	
+	ScriptContext2_Enable();
+	// TODO Change to surf music
+	//Overworld_ClearSavedMusic();
+	//Overworld_ChangeMusicToDefault();
+	gPlayerAvatar.flags &= ~PLAYER_AVATAR_FLAG_ON_FOOT;
+	gPlayerAvatar.flags |= PLAYER_AVATAR_FLAG_SURFING;
+	gPlayerAvatar.preventStep = TRUE;
+	taskId = CreateTask(Task_StartSurfingInit, 0xFF);
+	gTasks[taskId].data[0] = direction;
+	Task_StartSurfingInit(taskId);
+}
+
 static void Task_StopSurfingInit(u8 taskId)
 {
     struct EventObject *playerEventObj = &gEventObjects[gPlayerAvatar.eventObjectId];
@@ -1667,6 +1701,37 @@ static void Task_WaitStopSurfing(u8 taskId)
         DestroySprite(&gSprites[playerEventObj->fieldEffectSpriteId]);
         DestroyTask(taskId);
     }
+}
+
+static void Task_StartSurfingInit(u8 taskId)
+{
+	struct EventObject *playerEventObj = &gEventObjects[gPlayerAvatar.eventObjectId];
+	
+	if (EventObjectIsMovementOverridden(playerEventObj))
+	{
+		if (!EventObjectClearHeldMovementIfFinished(playerEventObj))
+			return;
+	}
+	//sub_81555AC(playerEventObj->fieldEffectSpriteId, 2);
+	EventObjectSetHeldMovement(playerEventObj, GetJumpSpecialMovementAction((u8)gTasks[taskId].data[0]));
+// 	FldEff_SurfBlob();
+// 	UpdateSurfBlobFieldEffect(&gSprites[playerEventObj->fieldEffectSpriteId]);
+	gTasks[taskId].func = Task_WaitStartSurfing;
+}
+
+static void Task_WaitStartSurfing(u8 taskId)
+{
+	struct EventObject *playerEventObj = &gEventObjects[gPlayerAvatar.eventObjectId];
+	
+	if (EventObjectClearHeldMovementIfFinished(playerEventObj))
+	{
+		EventObjectSetGraphicsId(playerEventObj, GetPlayerAvatarGraphicsIdByStateId(PLAYER_AVATAR_STATE_SURFING));
+		EventObjectSetHeldMovement(playerEventObj, GetFaceDirectionMovementAction(playerEventObj->facingDirection));
+		gPlayerAvatar.preventStep = FALSE;
+		ScriptContext2_Disable();
+		DestroySprite(&gSprites[playerEventObj->fieldEffectSpriteId]);
+		DestroyTask(taskId);
+	}
 }
 
 static bool8 (*const sFishingStateFuncs[])(struct Task *) =

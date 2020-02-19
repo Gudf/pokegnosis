@@ -228,7 +228,7 @@ static void MachBikeTransition_TrySpeedUp(u8 direction)
                 Bike_SetBikeStill();
                 if (collision == COLLISION_EVENT_OBJECT && IsPlayerCollidingWithFarawayIslandMew(direction))
                     PlayerOnBikeCollideWithFarawayIslandMew(direction);
-                else if (collision < COLLISION_STOP_SURFING || collision > COLLISION_ROTATING_GATE)
+                else if (collision < COLLISION_START_SURFING || collision > COLLISION_ROTATING_GATE)
                     PlayerOnBikeCollide(direction);
             }
         }
@@ -263,7 +263,7 @@ static void MachBikeTransition_TrySlowDown(u8 direction)
             Bike_SetBikeStill();
             if (collision == COLLISION_EVENT_OBJECT && IsPlayerCollidingWithFarawayIslandMew(direction))
                 PlayerOnBikeCollideWithFarawayIslandMew(direction);
-            else if (collision < COLLISION_STOP_SURFING || collision > COLLISION_ROTATING_GATE)
+            else if (collision < COLLISION_START_SURFING || collision > COLLISION_ROTATING_GATE)
                 PlayerOnBikeCollide(direction);
         }
     }
@@ -559,7 +559,7 @@ static void AcroBikeTransition_Moving(u8 direction)
             PlayerJumpLedge(direction);
         else if (collision == COLLISION_EVENT_OBJECT && IsPlayerCollidingWithFarawayIslandMew(direction))
             PlayerOnBikeCollideWithFarawayIslandMew(direction);
-        else if (collision < COLLISION_STOP_SURFING || collision > COLLISION_ROTATING_GATE)
+        else if (collision < COLLISION_START_SURFING || collision > COLLISION_ROTATING_GATE)
             PlayerOnBikeCollide(direction);
     }
     else
@@ -624,7 +624,7 @@ static void AcroBikeTransition_WheelieHoppingMoving(u8 direction)
     {
         PlayerLedgeHoppingWheelie(direction);
     }
-    else if (collision < COLLISION_STOP_SURFING || collision > COLLISION_ROTATING_GATE)
+    else if (collision < COLLISION_START_SURFING || collision > COLLISION_ROTATING_GATE)
     {
         if (collision < COLLISION_VERTICAL_RAIL)
         {
@@ -691,7 +691,7 @@ static void AcroBikeTransition_WheelieMoving(u8 direction)
         {
             PlayerIdleWheelie(direction);
         }
-        else if (collision < COLLISION_STOP_SURFING)
+        else if (collision < COLLISION_START_SURFING)
         {
             if (MetatileBehavior_IsBumpySlope(playerEventObj->currentMetatileBehavior))
                 PlayerIdleWheelie(direction);
@@ -725,7 +725,7 @@ static void AcroBikeTransition_WheelieRisingMoving(u8 direction)
         {
             PlayerIdleWheelie(direction);
         }
-        else if (collision < COLLISION_STOP_SURFING)
+        else if (collision < COLLISION_START_SURFING)
         {
             if (MetatileBehavior_IsBumpySlope(playerEventObj->currentMetatileBehavior))
                 PlayerIdleWheelie(direction);
@@ -753,7 +753,7 @@ static void AcroBikeTransition_WheelieLoweringMoving(u8 direction)
     {
         if (collision == COLLISION_LEDGE_JUMP)
             PlayerJumpLedge(direction);
-        else if (collision < COLLISION_STOP_SURFING || collision > COLLISION_ROTATING_GATE)
+        else if (collision < COLLISION_START_SURFING || collision > COLLISION_ROTATING_GATE)
             PlayerEndWheelie(direction);
         return;
     }
