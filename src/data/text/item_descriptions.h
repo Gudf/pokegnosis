@@ -1549,3 +1549,91 @@ static const u8 sOldSeaMapDesc[] = _(
     "A faded sea chart\n"
     "that shows the way\n"
     "to a certain island.");
+
+// HM Scrolls
+static const u8 sScrollRockSmashDesc[] = _(
+    "A fantastic\n"
+    "placeholder.\n"
+    "(Rock Smash)");
+
+static const u8 sScrollCutDesc[] = _(
+    "A fantastic\n"
+    "placeholder.\n"
+    "(Cut)");
+
+static const u8 sScrollSurfDesc[] = _(
+    "A fantastic\n"
+    "placeholder.\n"
+    "(Surf)");
+
+/* TODO: Rock Climb
+static const u8 sScrollRockClimbDesc[] = _(
+    "A fantastic\n"
+    "placeholder.\n"
+    "(Rock Climb)");
+*/
+
+static const u8 sScrollWaterfallDesc[] = _(
+    "A fantastic\n"
+    "placeholder.\n"
+    "(Surf)");
+
+static const u8 sScrollStrengthDesc[] = _(
+    "A fantastic\n"
+    "placeholder.\n"
+    "(Strength)");
+
+static const u8 sScrollDiveDesc[] = _(
+    "A fantastic\n"
+    "placeholder.\n"
+    "(Dive)");
+
+static const u8 sScrollFlyDesc[] = _(
+    "A fantastic\n"
+    "placeholder.\n"
+    "(Fly)");
+
+static const u8 sScrollTeleportDesc[] = _(
+    "A fantastic\n"
+    "placeholder.\n"
+    "(Teleport)");
+
+static const u8 sScrollFlashDesc[] = _(
+    "A fantastic\n"
+    "placeholder.\n"
+    "(Flash)");
+
+/* TODO: Defog
+static const u8 sScrollDefogDesc[] = _(
+    "A fantastic\n"
+    "placeholder.\n"
+    "(Defog)");
+*/
+
+/* TODO: Headbutt
+static const u8 sScrollHeadbuttDesc[] = _(
+    "A fantastic\n"
+    "placeholder.\n"
+    "(Headbutt)");
+*/
+
+/* TODO: Spark
+static const u8 sScrollSparkDesc[] = _(
+    "A fantastic\n"
+    "placeholder.\n"
+    "(Spark)");
+*/
+
+/* TODO: Icy Wind
+static const u8 sScrollIcyWindDesc[] = _(
+    "A fantastic\n"
+    "placeholder.\n"
+    "(Icy Wind)");
+*/
+
+/* TODO: Telepathy
+static const u8 sScrollTelepathyDesc[] = _(
+    "A fantastic\n"
+    "placeholder.\n"
+    "(Telepathy)");
+*/

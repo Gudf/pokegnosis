@@ -4928,4 +4928,228 @@ const struct Item gItems[] =
         .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
         .secondaryId = 0,
     },
+
+//HM Scrolls
+
+    [ITEM_SCROLL_ROCK_SMASH] = 
+    {
+        .name = _("HOLLOW STRIKE"),
+        .itemId = ITEM_SCROLL_ROCK_SMASH,
+        .price = 0,
+        .description = sScrollRockSmashDesc,
+        .importance = 1,
+        .unk19 = 1,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = 4,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, //TODO
+        .secondaryId = 0,
+    },
+
+    [ITEM_SCROLL_CUT] = 
+    {
+        .name = _("EAGLE BEAK"),
+        .itemId = ITEM_SCROLL_CUT,
+        .price = 0,
+        .description = sScrollCutDesc,
+        .importance = 1,
+        .unk19 = 1,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = 4,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, //TODO
+        .secondaryId = 0,
+    },
+
+    [ITEM_SCROLL_SURF] = 
+    {
+        .name = _("CRANE LANDING"),
+        .itemId = ITEM_SCROLL_SURF,
+        .price = 0,
+        .description = sScrollSurfDesc,
+        .importance = 1,
+        .unk19 = 1,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = 4,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, //TODO
+        .secondaryId = 0,
+    },
+
+    /* TODO: Rock Climb
+    [ITEM_SCROLL_ROCK_CLIMB] = 
+    {
+        .name = _("SOARING PALM"),
+        .itemId = ITEM_SCROLL_ROCK_CLIMB,
+        .price = 0,
+        .description = sScrollRockClimbDesc,
+        .importance = 1,
+        .unk19 = 1,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = 4,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, //TODO
+        .secondaryId = 0,
+    },
+    */
+
+    [ITEM_SCROLL_WATERFALL] = 
+    {
+        .name = _("TUMBLING DUCK"),
+        .itemId = ITEM_SCROLL_WATERFALL,
+        .price = 0,
+        .description = sScrollWaterfallDesc,
+        .importance = 1,
+        .unk19 = 1,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = 4,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, //TODO
+        .secondaryId = 0,
+    },
+
+    [ITEM_SCROLL_STRENGTH] = 
+    {
+        .name = _("ISHI STONE"),
+        .itemId = ITEM_SCROLL_STRENGTH,
+        .price = 0,
+        .description = sScrollStrengthDesc,
+        .importance = 1,
+        .unk19 = 1,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = 4,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, //TODO
+        .secondaryId = 0,
+    },
+
+    [ITEM_SCROLL_DIVE] = 
+    {
+        .name = _("MONSTER TEAR"),
+        .itemId = ITEM_SCROLL_DIVE,
+        .price = 0,
+        .description = sScrollDiveDesc,
+        .importance = 1,
+        .unk19 = 1,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = 4,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, //TODO
+        .secondaryId = 0,
+    },
+
+    [ITEM_SCROLL_FLY] = 
+    {
+        .name = _("EMPRESS WINGS"),
+        .itemId = ITEM_SCROLL_FLY,
+        .price = 0,
+        .description = sScrollFlyDesc,
+        .importance = 1,
+        .unk19 = 1,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = 4,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, //TODO
+        .secondaryId = 0,
+    },
+
+    [ITEM_SCROLL_TELEPORT] = 
+    {
+        .name = _("EMPTY STANCE"),
+        .itemId = ITEM_SCROLL_TELEPORT,
+        .price = 0,
+        .description = sScrollTeleportDesc,
+        .importance = 1,
+        .unk19 = 1,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = 4,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, //TODO
+        .secondaryId = 0,
+    },
+
+    [ITEM_SCROLL_FLASH] = 
+    {
+        .name = _("HERO'S LIGHT"),
+        .itemId = ITEM_SCROLL_FLASH,
+        .price = 0,
+        .description = sScrollFlashDesc,
+        .importance = 1,
+        .unk19 = 1,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = 4,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, //TODO
+        .secondaryId = 0,
+    },
+
+    /*TODO: Defog
+    [ITEM_SCROLL_DEFOG] = 
+    {
+        .name = _("SHADOW ARMOUR"),
+        .itemId = ITEM_SCROLL_DEFOG,
+        .price = 0,
+        .description = sScrollDefogDesc,
+        .importance = 1,
+        .unk19 = 1,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = 4,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, //TODO
+        .secondaryId = 0,
+    },
+    */
+
+    /*TODO: Headbutt
+    [ITEM_SCROLL_HEADBUTT] = 
+    {
+        .name = _("LEOPARD PUNCH"),
+        .itemId = ITEM_SCROLL_HEADBUTT,
+        .price = 0,
+        .description = sScrollHeadbuttDesc,
+        .importance = 1,
+        .unk19 = 1,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = 4,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, //TODO
+        .secondaryId = 0,
+    },
+    */
+
+    /*TODO: Spark
+    [ITEM_SCROLL_SPARK] = 
+    {
+        .name = _("BATTERY SURGE"),
+        .itemId = ITEM_SCROLL_SPARK,
+        .price = 0,
+        .description = sScrollSparkDesc,
+        .importance = 1,
+        .unk19 = 1,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = 4,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, //TODO
+        .secondaryId = 0,
+    },
+    */
+
+    /*TODO: Icy Wind
+    [ITEM_SCROLL_ICY_WIND] = 
+    {
+        .name = _("BLIZZARD FORM"),
+        .itemId = ITEM_SCROLL_ICY_WIND,
+        .price = 0,
+        .description = sScrollIcyWindDesc,
+        .importance = 1,
+        .unk19 = 1,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = 4,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, //TODO
+        .secondaryId = 0,
+    },
+    */
+
+    /*TODO: Telepathy
+    [ITEM_SCROLL_TELEPATHY] = 
+    {
+        .name = _("MIND FOCUS"),
+        .itemId = ITEM_SCROLL_TELEPATHY,
+        .price = 0,
+        .description = sScrollTelepathyDesc,
+        .importance = 1,
+        .unk19 = 1,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = 4,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, //TODO
+        .secondaryId = 0,
+    },
+    */
 };
