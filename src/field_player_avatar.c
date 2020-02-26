@@ -140,10 +140,12 @@ static void AlignFishingAnimationFrames(void);
 
 static u8 sub_808D38C(struct EventObject *object, s16 *a1);
 
-static bool8 CanStartSurfing(s16 x, s16 y, u8 direction);
-static void CreateStartSurfingTask(u8 direction);
-static void Task_StartSurfingInit(u8 taskId);
-static void Task_WaitStartSurfing(u8 taskId);
+static bool8 CanStartSurfing(void);
+static void CreateStartSurfingTask(void);
+static void InitStartSurfingTask(u8);
+static void Task_StartSurfingInit(struct Task *);
+static void Task_StartSurfingBlob(struct Task *);
+static void Task_WaitStartSurfing(struct Task *);
 // .rodata
 
 static bool8 (*const sForcedMovementTestFuncs[])(u8) =
@@ -685,7 +687,7 @@ u8 CheckForEventObjectCollision(struct EventObject *eventObject, s16 x, s16 y, u
     u8 collision = GetCollisionAtCoords(eventObject, x, y, direction);
     if (collision == COLLISION_ELEVATION_MISMATCH && CanStopSurfing(x, y, direction))
         return COLLISION_STOP_SURFING;
-    if (collision == COLLISION_ELEVATION_MISMATCH && CanStartSurfing(x, y, direction))
+    if (collision == COLLISION_ELEVATION_MISMATCH && CanStartSurfing())
         return COLLISION_START_SURFING;
     if (ShouldJumpLedge(x, y, direction))
     {
@@ -732,17 +734,19 @@ static bool8 CanStopSurfing(s16 x, s16 y, u8 direction)
     }
 }
 
-static bool8 CanStartSurfing(s16 x, s16 y, u8 direction)
+static bool8 CanStartSurfing(void)
 {
-	if ((gPlayerAvatar.flags & PLAYER_AVATAR_FLAG_ON_FOOT)) // && !PartyHasMonWithSurf()) //TODO remove the !
-	{
-		CreateStartSurfingTask(direction);
-		return TRUE;
-	}
-	else
-	{
-		return FALSE;
-	}
+    if ((gPlayerAvatar.flags & PLAYER_AVATAR_FLAG_ON_FOOT) 
+     && IsPlayerFacingSurfableFishableWater() == TRUE
+     /*&& TODO Check if player has the scroll*/)
+    {
+        CreateStartSurfingTask();
+        return TRUE;
+    }
+    else
+    {
+        return FALSE;
+    }
 }
 
 static bool8 ShouldJumpLedge(s16 x, s16 y, u8 z)
@@ -1658,22 +1662,6 @@ static void CreateStopSurfingTask(u8 direction)
     Task_StopSurfingInit(taskId);
 }
 
-static void CreateStartSurfingTask(u8 direction)
-{
-	u8 taskId;
-	
-	ScriptContext2_Enable();
-	// TODO Change to surf music
-	//Overworld_ClearSavedMusic();
-	//Overworld_ChangeMusicToDefault();
-	gPlayerAvatar.flags &= ~PLAYER_AVATAR_FLAG_ON_FOOT;
-	gPlayerAvatar.flags |= PLAYER_AVATAR_FLAG_SURFING;
-	gPlayerAvatar.preventStep = TRUE;
-	taskId = CreateTask(Task_StartSurfingInit, 0xFF);
-	gTasks[taskId].data[0] = direction;
-	Task_StartSurfingInit(taskId);
-}
-
 static void Task_StopSurfingInit(u8 taskId)
 {
     struct EventObject *playerEventObj = &gEventObjects[gPlayerAvatar.eventObjectId];
@@ -1703,35 +1691,67 @@ static void Task_WaitStopSurfing(u8 taskId)
     }
 }
 
-static void Task_StartSurfingInit(u8 taskId)
+static void CreateStartSurfingTask(void)
 {
-	struct EventObject *playerEventObj = &gEventObjects[gPlayerAvatar.eventObjectId];
-	
-	if (EventObjectIsMovementOverridden(playerEventObj))
-	{
-		if (!EventObjectClearHeldMovementIfFinished(playerEventObj))
-			return;
-	}
-	//sub_81555AC(playerEventObj->fieldEffectSpriteId, 2);
-	EventObjectSetHeldMovement(playerEventObj, GetJumpSpecialMovementAction((u8)gTasks[taskId].data[0]));
-// 	FldEff_SurfBlob();
-// 	UpdateSurfBlobFieldEffect(&gSprites[playerEventObj->fieldEffectSpriteId]);
-	gTasks[taskId].func = Task_WaitStartSurfing;
+    u8 taskId = CreateTask(InitStartSurfingTask, 0xff);
+    gTasks[taskId].data[15] = gFieldEffectArguments[0];
+    Overworld_ClearSavedMusic();
+    Overworld_ChangeMusicTo(MUS_NAMINORI);
 }
 
-static void Task_WaitStartSurfing(u8 taskId)
+void (*const gStartSurfingTaskSteps[])(struct Task *) = {
+    Task_StartSurfingInit,
+    Task_StartSurfingBlob,
+    Task_WaitStartSurfing,
+};
+
+static void InitStartSurfingTask(u8 taskId)
 {
-	struct EventObject *playerEventObj = &gEventObjects[gPlayerAvatar.eventObjectId];
-	
-	if (EventObjectClearHeldMovementIfFinished(playerEventObj))
-	{
-		EventObjectSetGraphicsId(playerEventObj, GetPlayerAvatarGraphicsIdByStateId(PLAYER_AVATAR_STATE_SURFING));
-		EventObjectSetHeldMovement(playerEventObj, GetFaceDirectionMovementAction(playerEventObj->facingDirection));
-		gPlayerAvatar.preventStep = FALSE;
-		ScriptContext2_Disable();
-		DestroySprite(&gSprites[playerEventObj->fieldEffectSpriteId]);
-		DestroyTask(taskId);
-	}
+    gStartSurfingTaskSteps[gTasks[taskId].data[0]](&gTasks[taskId]);
+}
+
+static void Task_StartSurfingInit(struct Task *task)
+{
+    ScriptContext2_Enable();
+    FreezeEventObjects();
+    Overworld_ClearSavedMusic();
+    Overworld_ChangeMusicTo(MUS_NAMINORI);
+    gPlayerAvatar.preventStep = TRUE;
+    SetPlayerAvatarStateMask(8);
+    PlayerGetDestCoords(&task->data[1], &task->data[2]);
+    MoveCoords(gEventObjects[gPlayerAvatar.eventObjectId].movementDirection, &task->data[1], &task->data[2]);
+    task->data[0]++;
+}
+
+static void Task_StartSurfingBlob(struct Task *task)
+{
+    struct EventObject *eventObject;
+    eventObject = &gEventObjects[gPlayerAvatar.eventObjectId];
+    EventObjectSetGraphicsId(eventObject, GetPlayerAvatarGraphicsIdByStateId(PLAYER_AVATAR_STATE_SURFING));
+    EventObjectClearHeldMovementIfFinished(eventObject);
+    EventObjectSetHeldMovement(eventObject, GetJumpSpecialMovementAction(eventObject->movementDirection));
+    gFieldEffectArguments[0] = task->data[1];
+    gFieldEffectArguments[1] = task->data[2];
+    gFieldEffectArguments[2] = gPlayerAvatar.eventObjectId;
+    eventObject->fieldEffectSpriteId = FieldEffectStart(FLDEFF_SURF_BLOB);
+    task->data[0]++;
+}
+
+static void Task_WaitStartSurfing(struct Task *task)
+{
+    struct EventObject *eventObject;
+    eventObject = &gEventObjects[gPlayerAvatar.eventObjectId];
+    if (EventObjectClearHeldMovementIfFinished(eventObject))
+    {
+        gPlayerAvatar.preventStep = FALSE;
+        gPlayerAvatar.flags &= 0xdf;
+        EventObjectSetHeldMovement(eventObject, GetFaceDirectionMovementAction(eventObject->movementDirection));
+        sub_81555AC(eventObject->fieldEffectSpriteId, 1);
+        UnfreezeEventObjects();
+        ScriptContext2_Disable();
+        FieldEffectActiveListRemove(FLDEFF_USE_SURF);
+        DestroyTask(FindTaskIdByFunc(InitStartSurfingTask));
+    }
 }
 
 static bool8 (*const sFishingStateFuncs[])(struct Task *) =
